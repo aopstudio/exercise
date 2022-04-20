@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 import numpy as np
-
+import tensorflow as tf
 
 def load_data(fname):
     """
@@ -34,7 +34,11 @@ class SVM():
 
     def __init__(self):
         # 请补全此处代码
-        pass
+        self.W = tf.Variable(shape=[2, 1], dtype=tf.float32, 
+            initial_value=tf.random.uniform(shape=[2, 1], minval=-0.1, maxval=0.1))
+        self.b = tf.Variable(shape=[1], dtype=tf.float32, initial_value=tf.zeros(shape=[1]))
+        
+        self.trainable_variables = [self.W, self.b]
 
     def train(self, data_train):
         """
@@ -47,7 +51,8 @@ class SVM():
         """
         预测标签。
         """
-
+        y_preds = self(xs)
+        return y_preds
         # 请补全此处代码
 
 
