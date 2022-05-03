@@ -2,6 +2,8 @@
 # encoding: utf-8
 
 import numpy as np
+from libsvm.svmutil import svm_p
+from libsvm.svm import svm_problem
 import tensorflow as tf
 
 def load_data(fname):
@@ -34,11 +36,9 @@ class SVM():
 
     def __init__(self):
         # 请补全此处代码
-        self.W = tf.Variable(shape=[2, 1], dtype=tf.float32, 
-            initial_value=tf.random.uniform(shape=[2, 1], minval=-0.1, maxval=0.1))
-        self.b = tf.Variable(shape=[1], dtype=tf.float32, initial_value=tf.zeros(shape=[1]))
+        svm_read_problem()
         
-        self.trainable_variables = [self.W, self.b]
+        
 
     def train(self, data_train):
         """
