@@ -2,8 +2,6 @@
 # encoding: utf-8
 
 import numpy as np
-from libsvm.svmutil import svm_p
-from libsvm.svm import svm_problem
 import tensorflow as tf
 
 def load_data(fname):
@@ -36,7 +34,11 @@ class SVM():
 
     def __init__(self):
         # 请补全此处代码
-        svm_read_problem()
+        self.W = tf.Variable(shape=[2, 1], dtype=tf.float32,
+                             initial_value=tf.random.uniform(shape=[2, 1], minval=-0.1, maxval=0.1))
+        self.b = tf.Variable(shape=[1], dtype=tf.float32, initial_value=tf.zeros(shape=[1]))
+
+        self.trainable_variables = [self.W, self.b]
         
         
 
@@ -46,13 +48,29 @@ class SVM():
         """
 
         # 请补全此处代码
+        optimizer = tf.keras.optimizers.SGD(learning_rate=0.01)
+        animation_fram = []
+        for i in range(100):
+            with tf.GradientTape() as tape:
+                pred= self.predict(data_train[:,:2])
+                losses=  tf.maximum(0,1-tf.constant(data_train[:, 2],dtype=tf.float32)*pred)
+                loss= tf.reduce_mean(losses)
+
+                grads = tape.gradient(loss, self.trainable_variables)
+                optimizer.apply_gradients(zip(grads, self.trainable_variables))
+                animation_fram.append((self.W.numpy()[0, 0], self.W.numpy()[1, 0], self.b.numpy(), loss.numpy()))
+                if i%10==0 :
+                    print(loss)
+        # 请补全此处代码
+        return  animation_fram
 
     def predict(self, x):
         """
         预测标签。
         """
-        y_preds = self(xs)
-        return y_preds
+        pred = tf.matmul(tf.constant(x, dtype=tf.float32), self.W) + self.b
+        pred = tf.squeeze(pred, axis=1)
+        return pred
         # 请补全此处代码
 
 
